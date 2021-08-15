@@ -2,3 +2,5 @@ config.js
 /node_modules
 metal-repeater-323002-19160b76263f.json
 package-lock.json
+automl.js
+test.js
