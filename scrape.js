@@ -1,13 +1,21 @@
-const curl = require("curl");
+const fs = require('fs');
+const got = require('got');
 const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 
-function parseData(html){
-    const {JSDOM} = jsdom;
-    const dom = new JSDOM(html);
-    const $ = (require('jquery'))(dom.window);
-    console.log(html);
-    //let's start extracting the data
-}
+const url= 'https://spanish.kwiziq.com/learn/theme/721820';
 
-const url = "https://quizlet.com/gb/460615265/spanish-b2-examen-1-flash-cards/";
-curl.get(url, null, (err,resp,body)=>{parseData(body);});
+module.exports = {scrape: function scrape(){
+got(url).then(response => {
+    const dom = new JSDOM(response.body);
+    const length = (dom.window.document.querySelectorAll('.txt--lang-native').length);
+    const i = Math.floor(Math.random() * length + 1);
+    const native = dom.window.document.querySelectorAll('.txt--lang-native')[i].textContent;
+    const foreign = dom.window.document.querySelectorAll('.txt--lang-foreign')[i].textContent;
+    const text = native + ' => ' + foreign;
+    fs.writeFile('word.txt', text, function (err) {
+        if (err) return console.log(err);
+    });
+}).catch(err => {
+  console.log(err);
+})}}
